@@ -26,6 +26,7 @@ const Terminal = () => {
     'whoami': 'You are a coding ninja 💻',
     'cp motivation /dev/me': 'Success: Motivation copied! Boosting productivity by 20% 🚀',
     'df -h': 'Emotional space: 10% free. Recommend backing up memories 📦',
+    'ls': 'Files: ./overwhelming_deadlines ./mild_panic ./restarting_project_(again)',
     'grep "love" life': 'Love not found. Check your relationships file 🥀',
     'uname -a': 'System: Human 2.0, Powered by caffeine, Random reboots due to lack of sleep 🧠',
     'sudo find happiness': 'Permission denied: Happiness must be self-discovered 🧘‍♂️',
