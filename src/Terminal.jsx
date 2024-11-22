@@ -33,6 +33,7 @@ const Terminal = () => {
     'cd /success': 'No such file or directory found. Try "/hardwork" instead 💪',
     'history -c': 'Nice try, but memories cannot be deleted that easily 😆',
     'ps -ef | grep "peace"': 'Process "peace" not found. Try meditation 🧘',
+    'chmod 777 everything': 'Warning: Security team has been notified. Your future self disapproves 👀',
     'kill -9 laziness': 'Error: laziness is an unkillable process. Please try again after coffee ☕️',
     'echo "sleep"': 'sleep: command not found. Try "insomnia --force" instead 💤',
     'help': 'Available commands: relationship status, coffee level, debug life, work status, motivation, weekend plans, current task, ping heart, git status, sudo make coffee, ls friends, rm -rf stress, cat wisdom, apt-get happiness, man woman, ping boss, top, whoami, cp motivation /dev/me, df -h, grep "love" life, uname -a, sudo find happiness, chmod +x productivity, cd /success, history -c, ps -ef | grep "peace", kill -9 laziness, echo "sleep"',
