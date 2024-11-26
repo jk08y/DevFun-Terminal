@@ -183,7 +183,7 @@ const EnhancedTerminal = () => {
             <div className="w-3 h-3 rounded-full bg-green-500"></div>
           </div>
           <div className="text-center flex-1">
-            <span className="text-gray-400 font-mono">jk08y@pro-terminal</span>
+            <span className="text-gray-400 font-mono">jk08y@𝕏-terminal</span>
           </div>
           <div className="flex items-center gap-2">
             <button 
