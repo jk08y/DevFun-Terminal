@@ -83,8 +83,54 @@ const EnhancedTerminal = () => {
     'whoami': {
       response: 'User Profile:\n- Role: Coding Ninja 💻\n- Special Abilities:\n  * Caffeine Resistance\n  * Bug Annihilation\n  * Stack Overflow Fluency',
       type: 'info'
-    }
+    },
+    'npm install life': {
+    response: 'Installing dependencies...\n- Downloading: Motivation\n- Extracting: Dreams\n- Configuring: Success.config\n✨ Installation complete! Restart required 🚀',
+    type: 'success'
+  },
+  'git commit -m "life"': {
+    response: 'Commit successful!\n- Message: Embracing the journey\n- Changes: Infinite potential\n- Branches merged: Mind & Heart',
+    type: 'success'
+  },
+  'coding status': {
+    response: 'Current Programming State:\n- Caffeine Level: ☕️☕️☕️\n- Bug Density: Low\n- Productivity: Maximum Overdrive 💻',
+    type: 'info'
+  },
+  'energy level': {
+    response: 'Energy Diagnostic:\n- Coffee Intake: Critical\n- Motivation: Overclocked\n- Burnout Protection: Engaged 🔋',
+    type: 'warning'
+  },
+  
+  'tell a dad joke': {
+    response: 'Why do programmers prefer dark mode?\nBecause light attracts bugs! 🐛\n\nAlternative joke:\nI told my wife she was drawing her eyebrows too high.\nShe looked surprised. 😂',
+    type: 'fun'
+  },
+  'compliment': {
+    response: 'Compliment Generator Activated 🌟\n- You are an absolute coding rockstar!\n- Your debug skills are legendary\n- Imposter syndrome: Denied ✨',
+    type: 'success'
+  },
+  'mood': {
+    response: 'Mood Analysis:\n- Current state: Caffeinated Zen 🧘‍♂️\n- Stress level: Ctrl+Alt+Deleted\n- Happiness: Compiling...',
+    type: 'info'
+  },
+
+  'disk space': {
+    response: 'Storage Breakdown:\n- Brain Space: 90% Memes\n- Motivation Drive: 10% Free\n- Coffee Cache: Unlimited 💾',
+    type: 'info'
+  },
+  'random excuse': {
+    response: 'Developer Excuse Generator:\n- "The code was working in my mind."\n- "It\'s not a bug, it\'s an undocumented feature."\n- "Blame it on the compiler!" 🤷‍♂️',
+    type: 'fun'
+  },
+  'procrastination level': {
+    response: 'Procrastination Meter:\n- Current Status: Maximum Overdrive\n- Next Task: "I\'ll do it tomorrow"\n- Productivity: Temporarily Suspended 😴',
+    type: 'warning'
+  },
+  'error 404': {
+    response: 'Error 404: Motivation Not Found 🕳️\n- Recommended Action: Emergency Coffee Deployment\n- Reboot Required: Self-Motivation.exe',
+    type: 'error'
   }
+}
 
 
 
@@ -96,14 +142,12 @@ const EnhancedTerminal = () => {
     type: 'info'
   };
 
-  // Enhanced command handling with more robust processing
   const handleCommand = (e) => {
     e.preventDefault();
     const trimmedInput = input.trim().toLowerCase();
     
     if (trimmedInput === '') return;
 
-    // Add to command history
     const updatedHistory = [...commandHistory, trimmedInput];
     setCommandHistory(updatedHistory);
     setHistoryIndex(updatedHistory.length);
