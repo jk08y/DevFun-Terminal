@@ -113,7 +113,34 @@ const EnhancedTerminal = () => {
     response: 'Mood Analysis:\n- Current state: Caffeinated Zen 🧘‍♂️\n- Stress level: Ctrl+Alt+Deleted\n- Happiness: Compiling...',
     type: 'info'
   },
-
+  'imposter syndrome': {
+    response: 'Confidence Debugger Activated 🛠️\n- Detecting self-doubt: Quarantined\n- Self-worth: Compiling...\n- Imposter status: Rejected',
+    type: 'success'
+  },
+  'snack inventory': {
+    response: 'Pantry Scan Complete 🍪\n- Chocolate Reserves: Critical\n- Emergency Cookies: Detected\n- Hunger Mitigation: 100% Effective',
+    type: 'info'
+  },
+  'sleep deficit': {
+    response: 'Sleep Diagnostic Report:\n- Current Status: Caffeine-Powered Zombie 🧟‍♂️\n- REM Cycles: Pending\n- Recommended Action: Immediate Recharge',
+    type: 'warning'
+  },
+  'project deadline': {
+    response: 'Mission Impossible Protocol 🕒\n- Time Remaining: Approximately Never\n- Stress Level: Quantum Entanglement\n- Survival Chance: Probability Loading...',
+    type: 'error'
+  },
+  'learning curve': {
+    response: 'Skill Progression Tracker 📈\n- Current Level: Enthusiastic Novice\n- XP Gained: Infinite\n- Next Upgrade: Continuous Integration',
+    type: 'success'
+  },
+  'code quality': {
+    response: 'Code Hygiene Assessment 🧼\n- Spaghetti Index: Low\n- Readability: Poet-Programmer Level\n- Technical Debt: Gracefully Managed',
+    type: 'info'
+  },
+  'existential query': {
+    response: 'Philosophical Debugger Running 🤔\n- Purpose.exe: Searching...\n- Meaning Detected: Create. Learn. Grow.\n- Existential Errors: Resolved',
+    type: 'success'
+  },
   'disk space': {
     response: 'Storage Breakdown:\n- Brain Space: 90% Memes\n- Motivation Drive: 10% Free\n- Coffee Cache: Unlimited 💾',
     type: 'info'
