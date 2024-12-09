@@ -9,7 +9,6 @@ const EnhancedTerminal = () => {
   const bottomRef = useRef(null);
   const inputRef = useRef(null);
 
-  // Comprehensive command responses with more context and humor
   const funnyResponses = {
     'relationship status': {
       response: 'Committed to main branch 💍\n- Relationship type: Git merge\n- Conflict resolution: Always communicate',
