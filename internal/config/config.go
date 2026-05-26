@@ -10,11 +10,13 @@ import (
 
 // Config holds all gsh settings.
 type Config struct {
-	Theme    string        `toml:"theme"`
-	ShowGit  bool          `toml:"show_git"`
-	ShowUser bool          `toml:"show_user"`
-	ShowHost bool          `toml:"show_host"`
-	History  HistoryConfig `toml:"history"`
+	Theme     string        `toml:"theme"`
+	ShowGit   bool          `toml:"show_git"`
+	ShowUser  bool          `toml:"show_user"`
+	ShowHost  bool          `toml:"show_host"`
+	History   HistoryConfig `toml:"history"`
+	AliasFile string        `toml:"alias_file"`
+	RCFile    string        `toml:"rc_file"`
 }
 
 // HistoryConfig controls command history behaviour.
@@ -26,6 +28,7 @@ type HistoryConfig struct {
 // Default returns a Config with sensible out-of-the-box values.
 func Default() *Config {
 	home, _ := os.UserHomeDir()
+	base := filepath.Join(home, ".config", "gsh")
 	return &Config{
 		Theme:    "dracula",
 		ShowGit:  true,
@@ -33,8 +36,10 @@ func Default() *Config {
 		ShowHost: false,
 		History: HistoryConfig{
 			MaxSize: 10000,
-			File:    filepath.Join(home, ".config", "gsh", "history"),
+			File:    filepath.Join(base, "history"),
 		},
+		AliasFile: filepath.Join(base, "aliases"),
+		RCFile:    filepath.Join(base, "gshrc"),
 	}
 }
 
@@ -53,9 +58,8 @@ func Load() (*Config, error) {
 	}
 
 	configFile := filepath.Join(configDir, "config.toml")
-
 	if _, err := os.Stat(configFile); os.IsNotExist(err) {
-		_ = writeDefaults(configFile) // best-effort
+		_ = writeDefaults(configFile)
 		return cfg, nil
 	}
 
@@ -63,12 +67,19 @@ func Load() (*Config, error) {
 		return cfg, fmt.Errorf("parsing config: %w", err)
 	}
 
-	// Expand ~ in history file path
-	if len(cfg.History.File) > 1 && cfg.History.File[:2] == "~/" {
-		cfg.History.File = filepath.Join(home, cfg.History.File[2:])
-	}
+	// Expand ~ in path fields
+	cfg.History.File = expandHome(cfg.History.File, home)
+	cfg.AliasFile = expandHome(cfg.AliasFile, home)
+	cfg.RCFile = expandHome(cfg.RCFile, home)
 
 	return cfg, nil
+}
+
+func expandHome(path, home string) string {
+	if len(path) >= 2 && path[:2] == "~/" {
+		return filepath.Join(home, path[2:])
+	}
+	return path
 }
 
 func writeDefaults(path string) error {
@@ -89,6 +100,9 @@ show_host = false       # show hostname in prompt
 [history]
 max_size = 10000
 file     = "~/.config/gsh/history"
+
+alias_file = "~/.config/gsh/aliases"
+rc_file    = "~/.config/gsh/gshrc"
 `)
 	return err
 }

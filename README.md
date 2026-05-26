@@ -25,11 +25,15 @@
 |---------|---------|
 | **Real command execution** | Full POSIX sh semantics via `mvdan.cc/sh/v3` |
 | **Pipes and redirects** | `ls \| grep go > files.txt` works out of the box |
+| **Aliases** | Define, persist, and expand shell aliases |
+| **RC file** | `~/.config/gsh/gshrc` executed on every startup |
+| **Source files** | `source file` runs any script in the current shell context |
+| **Directory stack** | `pushd`, `popd`, `dirs` for fast directory navigation |
+| **Command lookup** | `which` and `type` to inspect commands and aliases |
 | **Clean prompt** | Username, CWD (auto-truncated), git branch, exit-code indicator |
 | **Colour themes** | Dracula, Nord, Catppuccin, One Dark, Tokyo Night |
 | **Command history** | Persisted to `~/.config/gsh/history`, arrow-key navigation |
 | **Tab completion** | Executables on `$PATH` and file/directory paths |
-| **Built-in commands** | `cd`, `export`, `unset`, `env`, `history`, `theme`, `clear`, `help` |
 | **TOML config** | Auto-created at `~/.config/gsh/config.toml` on first run |
 
 ---
@@ -78,11 +82,22 @@ jk ~/projects/gsh  main
 $ _
 ```
 
-### Built-in commands
+---
+
+## Built-in commands
 
 | Command | Description |
 |---------|-------------|
+| `alias [name[=value]]` | Define or show aliases |
+| `unalias name` | Remove an alias |
 | `cd [dir]` | Change directory (`cd -` goes back) |
+| `pushd [dir]` | Push directory onto stack and cd |
+| `popd` | Pop directory stack and cd back |
+| `dirs` | Show directory stack |
+| `source file` | Execute file in current shell context |
+| `. file` | Same as source |
+| `which command` | Locate a command or show its alias |
+| `type name` | Describe what a name is (builtin, alias, or path) |
 | `export KEY=VAL` | Set environment variable |
 | `unset KEY` | Unset environment variable |
 | `env` | Print all environment variables |
@@ -93,10 +108,59 @@ $ _
 | `exit` / `quit` | Exit the shell |
 | `help` | Show built-in help |
 
-### Themes
+---
+
+## Aliases
+
+Aliases are defined with `alias`, persisted automatically to `~/.config/gsh/aliases`, and loaded on every startup.
 
 ```bash
-theme            # list all available themes
+alias ll='ls -la'
+alias gs='git status'
+alias ..='cd ..'
+
+alias          # list all defined aliases
+alias ll       # show a single alias
+unalias ll     # remove an alias
+```
+
+You can also pre-load aliases in your RC file (see below).
+
+---
+
+## RC file
+
+On startup gsh executes `~/.config/gsh/gshrc` if it exists. Use it for aliases, exports, and any setup commands:
+
+```bash
+# ~/.config/gsh/gshrc
+
+alias ll='ls -la'
+alias gs='git status'
+alias gp='git push'
+
+export EDITOR=vim
+export GOPATH=$HOME/go
+```
+
+---
+
+## Directory stack
+
+```bash
+pushd ~/projects   # cd to ~/projects and save current dir
+pushd /tmp         # cd to /tmp and save ~/projects
+dirs               # show stack: /tmp  ~/projects  (original)
+popd               # return to ~/projects
+popd               # return to original dir
+```
+
+---
+
+## Themes
+
+```bash
+theme              # list all available themes
 theme nord
 theme catppuccin
 theme onedark
@@ -121,9 +185,21 @@ show_host = false       # show hostname in prompt
 [history]
 max_size = 10000
 file     = "~/.config/gsh/history"
+
+alias_file = "~/.config/gsh/aliases"
+rc_file    = "~/.config/gsh/gshrc"
 ```
 
-Edit this file and restart gsh to apply changes.
+---
+
+## Config files
+
+| File | Purpose |
+|------|---------|
+| `~/.config/gsh/config.toml` | Main configuration |
+| `~/.config/gsh/gshrc` | Startup script (aliases, exports, etc.) |
+| `~/.config/gsh/aliases` | Persisted alias definitions |
+| `~/.config/gsh/history` | Command history |
 
 ---
 
@@ -131,7 +207,7 @@ Edit this file and restart gsh to apply changes.
 
 ```
 gsh/
-├── main.go                    # entry point
+├── main.go
 ├── go.mod / go.sum
 └── internal/
     ├── config/config.go       # TOML config loader
@@ -139,8 +215,9 @@ gsh/
     ├── prompt/prompt.go       # prompt renderer
     ├── completer/completer.go # readline tab-completion
     └── shell/
-        ├── shell.go           # REPL loop
-        └── builtins.go        # built-in commands
+        ├── shell.go           # REPL loop and startup
+        ├── builtins.go        # built-in command handlers
+        └── aliases.go         # alias load, save, expand
 ```
 
 ---
