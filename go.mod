@@ -1,4 +1,4 @@
-module github.com/jk08y/nexterm
+module github.com/jk08y/gsh
 
 go 1.18
 

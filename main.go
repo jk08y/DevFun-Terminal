@@ -6,8 +6,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/jk08y/nexterm/internal/config"
-	"github.com/jk08y/nexterm/internal/shell"
+	"github.com/jk08y/gsh/internal/config"
+	"github.com/jk08y/gsh/internal/shell"
 )
 
 const version = "1.0.0"
@@ -15,7 +15,7 @@ const version = "1.0.0"
 func main() {
 	cfg, err := config.Load()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "nexterm: config warning: %v\n", err)
+		fmt.Fprintf(os.Stderr, "gsh: config warning: %v\n", err)
 		cfg = config.Default()
 	}
 
@@ -31,7 +31,7 @@ func main() {
 	}()
 
 	if err := sh.Run(); err != nil {
-		fmt.Fprintf(os.Stderr, "nexterm: %v\n", err)
+		fmt.Fprintf(os.Stderr, "gsh: %v\n", err)
 		os.Exit(1)
 	}
 }

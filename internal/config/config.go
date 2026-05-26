@@ -8,7 +8,7 @@ import (
 	"github.com/BurntSushi/toml"
 )
 
-// Config holds all nexterm settings.
+// Config holds all gsh settings.
 type Config struct {
 	Theme    string        `toml:"theme"`
 	ShowGit  bool          `toml:"show_git"`
@@ -33,12 +33,12 @@ func Default() *Config {
 		ShowHost: false,
 		History: HistoryConfig{
 			MaxSize: 10000,
-			File:    filepath.Join(home, ".config", "nexterm", "history"),
+			File:    filepath.Join(home, ".config", "gsh", "history"),
 		},
 	}
 }
 
-// Load reads ~/.config/nexterm/config.toml, creating it with defaults if absent.
+// Load reads ~/.config/gsh/config.toml, creating it with defaults if absent.
 func Load() (*Config, error) {
 	cfg := Default()
 
@@ -47,7 +47,7 @@ func Load() (*Config, error) {
 		return cfg, nil
 	}
 
-	configDir := filepath.Join(home, ".config", "nexterm")
+	configDir := filepath.Join(home, ".config", "gsh")
 	if err := os.MkdirAll(configDir, 0o755); err != nil {
 		return cfg, fmt.Errorf("creating config dir: %w", err)
 	}
@@ -78,8 +78,8 @@ func writeDefaults(path string) error {
 	}
 	defer f.Close()
 
-	_, err = fmt.Fprintf(f, `# nexterm configuration
-# See https://github.com/jk08y/nexterm for documentation
+	_, err = fmt.Fprintf(f, `# gsh configuration
+# See https://github.com/jk08y/gsh for documentation
 
 theme     = "dracula"   # dracula | nord | catppuccin | onedark | tokyo-night
 show_git  = true        # show git branch in prompt
@@ -88,7 +88,7 @@ show_host = false       # show hostname in prompt
 
 [history]
 max_size = 10000
-file     = "~/.config/nexterm/history"
+file     = "~/.config/gsh/history"
 `)
 	return err
 }

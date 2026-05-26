@@ -7,12 +7,12 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
-	"github.com/jk08y/nexterm/internal/theme"
+	"github.com/jk08y/gsh/internal/theme"
 )
 
 // builtinResult is returned by every builtin handler.
 type builtinResult struct {
-	handled  bool // was this command a builtin?
+	handled  bool
 	exitCode int
 	doExit   bool // should the shell terminate?
 }
@@ -51,7 +51,7 @@ func (s *Shell) handleBuiltin(args []string) (builtinResult, bool) {
 	return builtinResult{}, false
 }
 
-// ── cd ──────────────────────────────────────────────────────────────────────
+// cd
 
 func (s *Shell) builtinCd(args []string) builtinResult {
 	var dir string
@@ -85,7 +85,7 @@ func (s *Shell) builtinCd(args []string) builtinResult {
 	return builtinResult{handled: true}
 }
 
-// ── history ──────────────────────────────────────────────────────────────────
+// history
 
 func (s *Shell) builtinHistory() builtinResult {
 	muted := lipgloss.NewStyle().Foreground(s.theme.Muted)
@@ -95,11 +95,10 @@ func (s *Shell) builtinHistory() builtinResult {
 	return builtinResult{handled: true}
 }
 
-// ── theme ─────────────────────────────────────────────────────────────────────
+// theme
 
 func (s *Shell) builtinTheme(args []string) builtinResult {
 	if len(args) == 0 {
-		// List available themes
 		available := theme.List()
 		sort.Strings(available)
 		primaryStyle := lipgloss.NewStyle().Foreground(s.theme.Primary).Bold(true)
@@ -107,7 +106,7 @@ func (s *Shell) builtinTheme(args []string) builtinResult {
 		for _, name := range available {
 			marker := "  "
 			if name == s.cfg.Theme {
-				marker = primaryStyle.Render("▶ ")
+				marker = primaryStyle.Render("> ")
 			}
 			fmt.Println(marker + name)
 		}
@@ -117,7 +116,7 @@ func (s *Shell) builtinTheme(args []string) builtinResult {
 	name := args[0]
 	t := theme.Get(name)
 	if t.Name != name {
-		fmt.Fprintf(os.Stderr, "theme: unknown theme %q — run 'theme' to list available\n", name)
+		fmt.Fprintf(os.Stderr, "theme: unknown theme %q  run 'theme' to list available\n", name)
 		return builtinResult{handled: true, exitCode: 1}
 	}
 
@@ -126,17 +125,16 @@ func (s *Shell) builtinTheme(args []string) builtinResult {
 	s.promptBuilder.SetTheme(t)
 
 	ok := lipgloss.NewStyle().Foreground(t.Success).Bold(true)
-	fmt.Printf("%s switched to theme %q\n", ok.Render("✓"), name)
+	fmt.Printf("%s switched to theme %q\n", ok.Render("ok"), name)
 	return builtinResult{handled: true}
 }
 
-// ── export ───────────────────────────────────────────────────────────────────
+// export
 
 func (s *Shell) builtinExport(args []string) builtinResult {
 	for _, arg := range args {
 		k, v, found := strings.Cut(arg, "=")
 		if !found {
-			// export NAME with existing value — just mark as exported (already is on Linux)
 			continue
 		}
 		if err := os.Setenv(k, v); err != nil {
@@ -147,7 +145,7 @@ func (s *Shell) builtinExport(args []string) builtinResult {
 	return builtinResult{handled: true}
 }
 
-// ── unset ─────────────────────────────────────────────────────────────────────
+// unset
 
 func (s *Shell) builtinUnset(args []string) builtinResult {
 	for _, key := range args {
@@ -156,7 +154,7 @@ func (s *Shell) builtinUnset(args []string) builtinResult {
 	return builtinResult{handled: true}
 }
 
-// ── env ──────────────────────────────────────────────────────────────────────
+// env
 
 func (s *Shell) builtinEnv() builtinResult {
 	for _, kv := range os.Environ() {
@@ -165,22 +163,22 @@ func (s *Shell) builtinEnv() builtinResult {
 	return builtinResult{handled: true}
 }
 
-// ── version ──────────────────────────────────────────────────────────────────
+// version
 
 func (s *Shell) builtinVersion() builtinResult {
 	bold := lipgloss.NewStyle().Foreground(s.theme.Primary).Bold(true)
-	fmt.Printf("%s v%s\n", bold.Render("nexterm"), s.version)
+	fmt.Printf("%s v%s\n", bold.Render("gsh"), s.version)
 	return builtinResult{handled: true}
 }
 
-// ── help ──────────────────────────────────────────────────────────────────────
+// help
 
 func (s *Shell) builtinHelp() builtinResult {
 	title := lipgloss.NewStyle().Foreground(s.theme.Primary).Bold(true)
 	cmd := lipgloss.NewStyle().Foreground(s.theme.Secondary)
 	muted := lipgloss.NewStyle().Foreground(s.theme.Muted)
 
-	fmt.Printf("\n%s — built-in commands\n\n", title.Render("nexterm"))
+	fmt.Printf("\n%s built-in commands\n\n", title.Render("gsh"))
 
 	builtins := []struct{ name, desc string }{
 		{"cd [dir]", "change directory (cd - goes back)"},
@@ -189,7 +187,7 @@ func (s *Shell) builtinHelp() builtinResult {
 		{"env", "print all environment variables"},
 		{"history", "show command history"},
 		{"theme [name]", "list or switch colour theme"},
-		{"version", "print nexterm version"},
+		{"version", "print gsh version"},
 		{"clear", "clear the screen"},
 		{"exit / quit", "exit the shell"},
 		{"help", "show this message"},
@@ -200,7 +198,7 @@ func (s *Shell) builtinHelp() builtinResult {
 	}
 
 	fmt.Println()
-	fmt.Println(muted.Render("All other input is executed as a real shell command (pipes, redirects, etc. work)."))
+	fmt.Println(muted.Render("Everything else is executed as a real OS command (pipes, redirects, subshells all work)."))
 	fmt.Println()
 
 	return builtinResult{handled: true}

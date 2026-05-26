@@ -1,5 +1,5 @@
 # compiled binary
-nexterm
+gsh
 
 # Go test cache
 *.test

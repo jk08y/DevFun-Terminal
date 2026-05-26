@@ -9,15 +9,15 @@ import (
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/chzyer/readline"
-	"github.com/jk08y/nexterm/internal/completer"
-	"github.com/jk08y/nexterm/internal/config"
-	"github.com/jk08y/nexterm/internal/prompt"
-	"github.com/jk08y/nexterm/internal/theme"
+	"github.com/jk08y/gsh/internal/completer"
+	"github.com/jk08y/gsh/internal/config"
+	"github.com/jk08y/gsh/internal/prompt"
+	"github.com/jk08y/gsh/internal/theme"
 	"mvdan.cc/sh/v3/interp"
 	"mvdan.cc/sh/v3/syntax"
 )
 
-// Shell is the central nexterm REPL.
+// Shell is the central gsh REPL.
 type Shell struct {
 	cfg           *config.Config
 	version       string
@@ -39,7 +39,7 @@ func New(cfg *config.Config, version string) *Shell {
 	}
 }
 
-// Cleanup is called on SIGTERM — gracefully closes readline.
+// Cleanup is called on SIGTERM: gracefully closes readline.
 func (s *Shell) Cleanup() {
 	if s.rl != nil {
 		_ = s.rl.Close()
@@ -49,20 +49,18 @@ func (s *Shell) Cleanup() {
 // Run starts the interactive REPL loop.
 func (s *Shell) Run() error {
 	// Ensure history directory exists
-	histDir := historyDir(s.cfg.History.File)
-	if histDir != "" {
-		_ = os.MkdirAll(histDir, 0o755)
+	if dir := parentDir(s.cfg.History.File); dir != "" {
+		_ = os.MkdirAll(dir, 0o755)
 	}
 
 	// Set up readline
 	rl, err := readline.NewEx(&readline.Config{
-		Prompt:          s.buildPrompt(),
-		HistoryFile:     s.cfg.History.File,
-		HistoryLimit:    s.cfg.History.MaxSize,
-		AutoComplete:    completer.New(),
-		InterruptPrompt: "^C",
-		EOFPrompt:       "exit",
-		// Disable the default pager so output flows freely
+		Prompt:                 s.buildPrompt(),
+		HistoryFile:            s.cfg.History.File,
+		HistoryLimit:           s.cfg.History.MaxSize,
+		AutoComplete:           completer.New(),
+		InterruptPrompt:        "^C",
+		EOFPrompt:              "exit",
 		DisableAutoSaveHistory: false,
 	})
 	if err != nil {
@@ -83,7 +81,7 @@ func (s *Shell) Run() error {
 
 	s.printWelcome()
 
-	// ── Main REPL loop ───────────────────────────────────────────────────────
+	// Main REPL loop
 	for {
 		rl.SetPrompt(s.buildPrompt())
 
@@ -107,7 +105,7 @@ func (s *Shell) Run() error {
 		s.history = append(s.history, line)
 
 		// Try builtin first
-		args := strings.Fields(expandEnv(line))
+		args := strings.Fields(os.ExpandEnv(line))
 		if result, ok := s.handleBuiltin(args); ok {
 			s.exitCode = result.exitCode
 			if result.doExit {
@@ -126,7 +124,7 @@ func (s *Shell) Run() error {
 // execute runs a shell command line (supports pipes, redirects, subshells, etc.)
 // and returns its exit code.
 func (s *Shell) execute(line string) int {
-	f, err := syntax.NewParser().Parse(strings.NewReader(line), "nexterm")
+	f, err := syntax.NewParser().Parse(strings.NewReader(line), "gsh")
 	if err != nil {
 		errStyle := lipgloss.NewStyle().Foreground(s.theme.Error)
 		fmt.Fprintln(os.Stderr, errStyle.Render("parse error: "+err.Error()))
@@ -138,8 +136,6 @@ func (s *Shell) execute(line string) int {
 		if code, ok := interp.IsExitStatus(err); ok {
 			return int(code)
 		}
-		// Don't print anything for normal command failures —
-		// the command itself will have printed an error.
 		return 1
 	}
 	return 0
@@ -157,27 +153,19 @@ func (s *Shell) printWelcome() {
 	secondary := lipgloss.NewStyle().Foreground(s.theme.Secondary)
 
 	fmt.Println()
-	fmt.Printf("  %s  %s\n",
-		primary.Render("nexterm"),
-		muted.Render("v"+s.version+" — a real shell"))
-	fmt.Printf("  %s\n", muted.Render("theme: "+s.cfg.Theme+"  •  type 'help' for built-ins"))
-	fmt.Printf("  %s\n\n", secondary.Render("All commands run for real. Pipes, redirects, env vars — everything works."))
+	fmt.Printf("  %s  v%s\n", primary.Render("gsh"), s.version)
+	fmt.Printf("  %s\n", muted.Render("theme: "+s.cfg.Theme+"  |  type 'help' for built-ins"))
+	fmt.Printf("  %s\n\n", secondary.Render("All commands run for real. Pipes, redirects, env vars all work."))
 }
 
-// expandEnv does basic $VAR expansion for builtin argument parsing.
-// External commands get full expansion from the sh runner.
-func expandEnv(s string) string {
-	return os.ExpandEnv(s)
-}
-
-// historyDir returns the parent directory of the history file path.
-func historyDir(file string) string {
+// parentDir returns the parent directory of a file path.
+func parentDir(file string) string {
 	if file == "" {
 		return ""
 	}
-	parts := strings.Split(file, "/")
-	if len(parts) <= 1 {
+	idx := strings.LastIndex(file, "/")
+	if idx <= 0 {
 		return ""
 	}
-	return strings.Join(parts[:len(parts)-1], "/")
+	return file[:idx]
 }

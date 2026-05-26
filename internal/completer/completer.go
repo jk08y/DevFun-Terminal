@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-// Completer implements readline.AutoCompleter for nexterm.
+// Completer implements readline.AutoCompleter for gsh.
 // It completes executables (first token) and file paths (subsequent tokens).
 type Completer struct{}
 

@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
-	"github.com/jk08y/nexterm/internal/config"
-	"github.com/jk08y/nexterm/internal/theme"
+	"github.com/jk08y/gsh/internal/config"
+	"github.com/jk08y/gsh/internal/theme"
 )
 
 // Builder constructs the shell prompt string.
@@ -40,7 +40,7 @@ func (b *Builder) Build(exitCode int) string {
 
 	var sb strings.Builder
 
-	// ── user[@host] ──────────────────────────────────────────────────────────
+	// user[@host]
 	if b.cfg.ShowUser {
 		user := os.Getenv("USER")
 		if user == "" {
@@ -56,7 +56,7 @@ func (b *Builder) Build(exitCode int) string {
 		sb.WriteString(" ")
 	}
 
-	// ── current directory ────────────────────────────────────────────────────
+	// current directory
 	cwd, _ := os.Getwd()
 	home, _ := os.UserHomeDir()
 	if strings.HasPrefix(cwd, home) {
@@ -65,11 +65,11 @@ func (b *Builder) Build(exitCode int) string {
 	// Truncate deep paths: show only last 2 segments
 	parts := strings.Split(filepath.ToSlash(cwd), "/")
 	if len(parts) > 3 {
-		cwd = "…/" + strings.Join(parts[len(parts)-2:], "/")
+		cwd = ".../" + strings.Join(parts[len(parts)-2:], "/")
 	}
 	sb.WriteString(secondary.Render(cwd))
 
-	// ── git branch ───────────────────────────────────────────────────────────
+	// git branch
 	if b.cfg.ShowGit {
 		if branch := gitBranch(); branch != "" {
 			sb.WriteString(" ")
@@ -77,13 +77,13 @@ func (b *Builder) Build(exitCode int) string {
 		}
 	}
 
-	// ── arrow (colour indicates last exit status) ────────────────────────────
+	// arrow (colour indicates last exit status)
 	sb.WriteString("\n")
 	arrowColor := b.theme.Success
 	if exitCode != 0 {
 		arrowColor = b.theme.Error
 	}
-	arrow := lipgloss.NewStyle().Foreground(arrowColor).Bold(true).Render("❯")
+	arrow := lipgloss.NewStyle().Foreground(arrowColor).Bold(true).Render("$")
 	sb.WriteString(arrow)
 	sb.WriteString(" ")
 
@@ -100,7 +100,7 @@ func gitBranch() string {
 	}
 	branch := strings.TrimSpace(string(out))
 	if branch == "HEAD" {
-		// Detached HEAD — show short hash instead
+		// Detached HEAD: show short hash instead
 		cmd2 := exec.Command("git", "rev-parse", "--short", "HEAD")
 		cmd2.Stderr = nil
 		out2, err2 := cmd2.Output()
