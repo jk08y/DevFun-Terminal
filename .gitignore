@@ -1,0 +1,14 @@
+# compiled binary
+nexterm
+
+# Go test cache
+*.test
+*.out
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+*.swp

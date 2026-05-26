@@ -6,7 +6,7 @@ require (
 	github.com/BurntSushi/toml v1.3.2
 	github.com/charmbracelet/lipgloss v0.10.0
 	github.com/chzyer/readline v1.5.1
-	mvdan.cc/sh/v3 v3.8.0
+	mvdan.cc/sh/v3 v3.7.0
 )
 
 require (
