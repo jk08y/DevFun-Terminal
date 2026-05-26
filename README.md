@@ -1,6 +1,6 @@
 # gsh
 
-> A real, compiled shell written in Go. Clean prompt, multiple themes, and full POSIX command support.
+> A Go shell that means business. Sharp prompt, colour themes, and the full weight of POSIX commands in one binary.
 
 ![Go](https://img.shields.io/badge/Go-1.18+-00ADD8?style=flat&logo=go)
 ![License](https://img.shields.io/badge/license-MIT-green)
