@@ -1,6 +1,6 @@
 # nexterm
 
-> A real, compiled shell written in Go — with a beautiful prompt, themes, and full POSIX command support.
+> A real, compiled shell written in Go. Beautiful prompt, multiple themes, and full POSIX command support.
 
 ![Go](https://img.shields.io/badge/Go-1.18+-00ADD8?style=flat&logo=go)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -10,12 +10,12 @@
 
 ## What it is
 
-**nexterm** is a working shell you can compile, install, and use as your daily driver (or as a sandboxed sub-shell). It is **not** an emulator or a toy — every command you type runs for real on your OS.
+**nexterm** is a working shell you can compile, install, and use as your daily driver (or as a sandboxed sub-shell). It is **not** an emulator or a toy. Every command you type runs for real on your OS.
 
-- `ls`, `git`, `python`, `docker`, `curl` — everything in your `$PATH` works
+- `ls`, `git`, `python`, `docker`, `curl`: everything in your `$PATH` works
 - Pipes (`|`), redirections (`>`, `>>`, `<`), subshells (`$(...)`) all work
 - Environment variables (`$HOME`, custom exports) expand correctly
-- Compiles to a **single static-ish binary** — no Node, no browser, no runtime
+- Compiles to a **single static-ish binary**: no Node, no browser, no runtime
 
 ---
 
@@ -70,9 +70,9 @@ nexterm
 ```
 $ nexterm
 
-  nexterm  v1.0.0 — a real shell
+  nexterm  v1.0.0  a real shell
   theme: dracula  •  type 'help' for built-ins
-  All commands run for real. Pipes, redirects, env vars — everything works.
+  All commands run for real. Pipes, redirects, env vars, everything works.
 
 jk ~/projects/nexterm  main
 ❯ _
